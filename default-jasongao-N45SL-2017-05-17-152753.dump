@@ -1,0 +1,477 @@
+-- MySQL dump 10.13  Distrib 5.7.18, for Linux (x86_64)
+--
+-- Host: localhost    Database: fortuneteller
+-- ------------------------------------------------------
+-- Server version	5.7.18-0ubuntu0.16.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `auth_group`
+--
+
+DROP TABLE IF EXISTS `auth_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_group`
+--
+
+LOCK TABLES `auth_group` WRITE;
+/*!40000 ALTER TABLE `auth_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_group_permissions`
+--
+
+DROP TABLE IF EXISTS `auth_group_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_group_permissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`),
+  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`),
+  CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_group_permissions`
+--
+
+LOCK TABLES `auth_group_permissions` WRITE;
+/*!40000 ALTER TABLE `auth_group_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_group_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_permission`
+--
+
+DROP TABLE IF EXISTS `auth_permission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content_type_id` int(11) NOT NULL,
+  `codename` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
+  CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_permission`
+--
+
+LOCK TABLES `auth_permission` WRITE;
+/*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
+INSERT INTO `auth_permission` VALUES (1,'Can add ba gua',1,'add_bagua'),(2,'Can change ba gua',1,'change_bagua'),(3,'Can delete ba gua',1,'delete_bagua'),(4,'Can add log entry',2,'add_logentry'),(5,'Can change log entry',2,'change_logentry'),(6,'Can delete log entry',2,'delete_logentry'),(7,'Can add group',3,'add_group'),(8,'Can change group',3,'change_group'),(9,'Can delete group',3,'delete_group'),(10,'Can add permission',4,'add_permission'),(11,'Can change permission',4,'change_permission'),(12,'Can delete permission',4,'delete_permission'),(13,'Can add user',5,'add_user'),(14,'Can change user',5,'change_user'),(15,'Can delete user',5,'delete_user'),(16,'Can add content type',6,'add_contenttype'),(17,'Can change content type',6,'change_contenttype'),(18,'Can delete content type',6,'delete_contenttype'),(19,'Can add session',7,'add_session'),(20,'Can change session',7,'change_session'),(21,'Can delete session',7,'delete_session'),(22,'Can add wuxing',8,'add_wuxing'),(23,'Can change wuxing',8,'change_wuxing'),(24,'Can delete wuxing',8,'delete_wuxing'),(25,'Can add liushisigua',9,'add_liushisigua'),(26,'Can change liushisigua',9,'change_liushisigua'),(27,'Can delete liushisigua',9,'delete_liushisigua'),(28,'Can add liuqin',10,'add_liuqin'),(29,'Can change liuqin',10,'change_liuqin'),(30,'Can delete liuqin',10,'delete_liuqin'),(31,'Can add dizhi',11,'add_dizhi'),(32,'Can change dizhi',11,'change_dizhi'),(33,'Can delete dizhi',11,'delete_dizhi'),(34,'Can add huntianjiazi',12,'add_huntianjiazi'),(35,'Can change huntianjiazi',12,'change_huntianjiazi'),(36,'Can delete huntianjiazi',12,'delete_huntianjiazi');
+/*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_user`
+--
+
+DROP TABLE IF EXISTS `auth_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `password` varchar(128) NOT NULL,
+  `last_login` datetime(6) DEFAULT NULL,
+  `is_superuser` tinyint(1) NOT NULL,
+  `username` varchar(150) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `is_staff` tinyint(1) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `date_joined` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_user`
+--
+
+LOCK TABLES `auth_user` WRITE;
+/*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$36000$jLpbWojeUcL1$kWIck0N8hHL5Srey4HwZCqtsyu4dkF+RvbsC4BJrI7U=','2017-05-16 14:02:29.219142',1,'jasongao','','','gao.jia.cheng@hotmail.com',1,1,'2017-05-15 15:46:17.853844');
+/*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_user_groups`
+--
+
+DROP TABLE IF EXISTS `auth_user_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_user_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_user_groups_user_id_group_id_94350c0c_uniq` (`user_id`,`group_id`),
+  KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`),
+  CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
+  CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_user_groups`
+--
+
+LOCK TABLES `auth_user_groups` WRITE;
+/*!40000 ALTER TABLE `auth_user_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_user_user_permissions`
+--
+
+DROP TABLE IF EXISTS `auth_user_user_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_user_user_permissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_user_user_permissions_user_id_permission_id_14a6b632_uniq` (`user_id`,`permission_id`),
+  KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`),
+  CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_user_user_permissions`
+--
+
+LOCK TABLES `auth_user_user_permissions` WRITE;
+/*!40000 ALTER TABLE `auth_user_user_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user_user_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_admin_log`
+--
+
+DROP TABLE IF EXISTS `django_admin_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `django_admin_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action_time` datetime(6) NOT NULL,
+  `object_id` longtext,
+  `object_repr` varchar(200) NOT NULL,
+  `action_flag` smallint(5) unsigned NOT NULL,
+  `change_message` longtext NOT NULL,
+  `content_type_id` int(11) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `django_admin_log_content_type_id_c4bce8eb_fk_django_co` (`content_type_id`),
+  KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`),
+  CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
+  CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_admin_log`
+--
+
+LOCK TABLES `django_admin_log` WRITE;
+/*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_content_type`
+--
+
+DROP TABLE IF EXISTS `django_content_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `django_content_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `app_label` varchar(100) NOT NULL,
+  `model` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_content_type`
+--
+
+LOCK TABLES `django_content_type` WRITE;
+/*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
+INSERT INTO `django_content_type` VALUES (2,'admin','logentry'),(3,'auth','group'),(4,'auth','permission'),(5,'auth','user'),(6,'contenttypes','contenttype'),(1,'liuyao','bagua'),(11,'liuyao','dizhi'),(12,'liuyao','huntianjiazi'),(10,'liuyao','liuqin'),(9,'liuyao','liushisigua'),(8,'liuyao','wuxing'),(7,'sessions','session');
+/*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_migrations`
+--
+
+DROP TABLE IF EXISTS `django_migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `django_migrations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `app` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `applied` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_migrations`
+--
+
+LOCK TABLES `django_migrations` WRITE;
+/*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2017-05-15 15:39:47.716992'),(2,'auth','0001_initial','2017-05-15 15:39:53.454952'),(3,'admin','0001_initial','2017-05-15 15:39:54.741334'),(4,'admin','0002_logentry_remove_auto_add','2017-05-15 15:39:54.841975'),(5,'contenttypes','0002_remove_content_type_name','2017-05-15 15:39:55.662086'),(6,'auth','0002_alter_permission_name_max_length','2017-05-15 15:39:56.153783'),(7,'auth','0003_alter_user_email_max_length','2017-05-15 15:39:56.716391'),(8,'auth','0004_alter_user_username_opts','2017-05-15 15:39:56.753765'),(9,'auth','0005_alter_user_last_login_null','2017-05-15 15:39:57.130229'),(10,'auth','0006_require_contenttypes_0002','2017-05-15 15:39:57.155209'),(11,'auth','0007_alter_validators_add_error_messages','2017-05-15 15:39:57.194523'),(12,'auth','0008_alter_user_username_max_length','2017-05-15 15:39:57.728255'),(14,'sessions','0001_initial','2017-05-15 15:39:58.399456'),(29,'liuyao','0001_initial','2017-05-17 14:26:08.946700'),(30,'liuyao','0002_auto_20170517_1430','2017-05-17 14:31:01.308034');
+/*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_session`
+--
+
+DROP TABLE IF EXISTS `django_session`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `django_session` (
+  `session_key` varchar(40) NOT NULL,
+  `session_data` longtext NOT NULL,
+  `expire_date` datetime(6) NOT NULL,
+  PRIMARY KEY (`session_key`),
+  KEY `django_session_expire_date_a5c62663` (`expire_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_session`
+--
+
+LOCK TABLES `django_session` WRITE;
+/*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
+INSERT INTO `django_session` VALUES ('rqelouwawe2ak96h3d6i7ijxvqghcdih','YTI2YjhjNDU4YzdjMjEwNjBjNjllYTA2Y2EyMmIwYTZiNjY0ODg1OTp7Il9hdXRoX3VzZXJfaGFzaCI6Ijg0MWVjMmRhMGJmZjJlMjE4ODUxYmFiNWUxMThkNDJhNzgwMjBlZTciLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=','2017-05-30 14:02:29.253241'),('sbkhkakvi0x4oic3l0nnn3q3alr3fbtg','YTI2YjhjNDU4YzdjMjEwNjBjNjllYTA2Y2EyMmIwYTZiNjY0ODg1OTp7Il9hdXRoX3VzZXJfaGFzaCI6Ijg0MWVjMmRhMGJmZjJlMjE4ODUxYmFiNWUxMThkNDJhNzgwMjBlZTciLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=','2017-05-29 15:46:57.256812');
+/*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `liuyao_bagua`
+--
+
+DROP TABLE IF EXISTS `liuyao_bagua`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `liuyao_bagua` (
+  `gua` varchar(250) NOT NULL,
+  `fangwei` varchar(250) NOT NULL,
+  `qinshu` varchar(250) NOT NULL,
+  `yuzhou` varchar(250) NOT NULL,
+  `yinyang` varchar(250) NOT NULL,
+  `wuxing` varchar(250) NOT NULL,
+  `guaxiang` varchar(250) NOT NULL,
+  PRIMARY KEY (`gua`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `liuyao_bagua`
+--
+
+LOCK TABLES `liuyao_bagua` WRITE;
+/*!40000 ALTER TABLE `liuyao_bagua` DISABLE KEYS */;
+INSERT INTO `liuyao_bagua` VALUES ('乾','西北','父','天','阳','金','111'),('兑','西','少女','泽','阴','金','011'),('坎','北','中男','水','阳','水','010'),('坤','西南','母','地','阴','土','000'),('巽','东南','长女','风','阴','木','110'),('离','南','中女','火','阴','火','101'),('艮','东北','少男','山','阳','土','110'),('震','东','长男','雷','阳','木','011');
+/*!40000 ALTER TABLE `liuyao_bagua` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `liuyao_dizhi`
+--
+
+DROP TABLE IF EXISTS `liuyao_dizhi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `liuyao_dizhi` (
+  `dizhi` varchar(250) NOT NULL,
+  `yinyang` varchar(250) NOT NULL,
+  `wuxing` varchar(250) NOT NULL,
+  PRIMARY KEY (`dizhi`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `liuyao_dizhi`
+--
+
+LOCK TABLES `liuyao_dizhi` WRITE;
+/*!40000 ALTER TABLE `liuyao_dizhi` DISABLE KEYS */;
+INSERT INTO `liuyao_dizhi` VALUES ('丑','阴','土'),('亥','阳','水'),('午','阳','火'),('卯','阳','木'),('子','阳','水'),('寅','阳','木'),('巳','阳','火'),('戌','阳','土'),('未','阳','土'),('申','阳','金'),('辰','阳','土'),('酉','阳','金');
+/*!40000 ALTER TABLE `liuyao_dizhi` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `liuyao_huntianjiazi`
+--
+
+DROP TABLE IF EXISTS `liuyao_huntianjiazi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `liuyao_huntianjiazi` (
+  `id` int(11) NOT NULL,
+  `gua` varchar(250) NOT NULL,
+  `neiwai` varchar(250) NOT NULL,
+  `chu` varchar(250) NOT NULL,
+  `er` varchar(250) NOT NULL,
+  `san` varchar(250) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `liuyao_huntianjiazi`
+--
+
+LOCK TABLES `liuyao_huntianjiazi` WRITE;
+/*!40000 ALTER TABLE `liuyao_huntianjiazi` DISABLE KEYS */;
+INSERT INTO `liuyao_huntianjiazi` VALUES (1,'乾','内','子','寅','辰'),(2,'坤','内','未','巳','卯'),(3,'震','内','子','寅','辰'),(4,'艮','内','辰','午','申'),(5,'离','内','卯','丑','亥'),(6,'坎','内','寅','辰','午'),(7,'兑','内','巳','卯','丑'),(8,'巽','内','丑','亥','酉'),(9,'乾','外','午','申','戌'),(10,'坤','外','丑','亥','酉'),(11,'震','外','午','申','戌'),(12,'艮','外','戌','子','寅'),(13,'离','外','酉','未','巳'),(14,'坎','外','申','戌','子'),(15,'兑','外','亥','酉','未'),(16,'巽','外','未','巳','卯');
+/*!40000 ALTER TABLE `liuyao_huntianjiazi` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `liuyao_liuqin`
+--
+
+DROP TABLE IF EXISTS `liuyao_liuqin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `liuyao_liuqin` (
+  `wuxing` varchar(250) NOT NULL,
+  `sheng` varchar(250) NOT NULL,
+  `ke` varchar(250) NOT NULL,
+  `beisheng` varchar(250) NOT NULL,
+  `beike` varchar(250) NOT NULL,
+  PRIMARY KEY (`wuxing`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `liuyao_liuqin`
+--
+
+LOCK TABLES `liuyao_liuqin` WRITE;
+/*!40000 ALTER TABLE `liuyao_liuqin` DISABLE KEYS */;
+INSERT INTO `liuyao_liuqin` VALUES ('兄弟','子孙','妻财','父母','官鬼'),('妻财','官鬼','父母','子孙','兄弟'),('子孙','妻财','官鬼','兄弟','父母'),('官鬼','父母','兄弟','妻财','子孙'),('父母','兄弟','子孙','官鬼','妻财');
+/*!40000 ALTER TABLE `liuyao_liuqin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `liuyao_liushisigua`
+--
+
+DROP TABLE IF EXISTS `liuyao_liushisigua`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `liuyao_liushisigua` (
+  `xu` int(11) NOT NULL,
+  `gua` varchar(250) NOT NULL,
+  `gong` varchar(250) NOT NULL,
+  `waigua` varchar(250) NOT NULL,
+  `neigua` varchar(250) NOT NULL,
+  `shi` int(11) NOT NULL,
+  `ying` int(11) NOT NULL,
+  `liuchong` tinyint(1) NOT NULL,
+  `liuhe` tinyint(1) NOT NULL,
+  `youhun` tinyint(1) NOT NULL,
+  `guihun` tinyint(1) NOT NULL,
+  PRIMARY KEY (`xu`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `liuyao_liushisigua`
+--
+
+LOCK TABLES `liuyao_liushisigua` WRITE;
+/*!40000 ALTER TABLE `liuyao_liushisigua` DISABLE KEYS */;
+INSERT INTO `liuyao_liushisigua` VALUES (1,'乾为天','乾','乾','乾',6,3,1,0,0,0),(2,'坤为地','坤','坤','坤',6,3,1,0,0,0),(3,'水雷屯','坎','坎','震',2,5,0,0,0,0),(4,'山水蒙','离','艮','坎',4,1,0,0,0,0),(5,'水天需','坤','坎','乾',4,1,0,0,1,0),(6,'天水讼','离','乾','坎',4,1,0,0,1,0),(7,'地水师','坎','坤','坎',3,6,0,0,0,1),(8,'水地比','坤','坎','坤',3,6,0,0,0,1),(9,'风天小畜','巽','巽','乾',1,4,0,0,0,0),(10,'天泽履','艮','乾','兑',5,2,0,0,0,0),(11,'地天泰','坤','坤','乾',3,6,0,1,0,0),(12,'天地否','乾','乾','坤',3,6,0,1,0,0),(13,'天火同人','离','乾','离',3,6,0,0,0,1),(14,'火天大有','乾','离','乾',3,6,0,0,0,1),(15,'地山谦','兑','坤','艮',5,2,0,0,0,0),(16,'雷地豫','震','震','坤',1,4,0,1,0,0),(17,'泽雷随','震','兑','震',3,6,0,0,0,1),(18,'山风蛊','巽','艮','巽',3,6,0,0,0,1),(19,'地泽临','坤','坤','兑',2,5,0,0,0,0),(20,'风地观','乾','巽','坤',4,1,0,0,0,0),(21,'火雷噬嗑','巽','离','震',5,2,0,0,0,0),(22,'山火贲','艮','艮','离',1,4,0,1,0,0),(23,'山地剥','乾','艮','坤',5,2,0,0,0,0),(24,'地雷复','坤','坤','震',1,4,0,1,0,0),(25,'天雷无妄','巽','乾','震',4,1,1,0,0,0),(26,'山天大畜','艮','艮','乾',2,5,0,0,0,0),(27,'山雷颐','巽','艮','震',4,1,0,0,1,0),(28,'泽风大过','震','兑','巽',4,1,0,0,1,0),(29,'坎为水','坎','坎','坎',6,3,1,0,0,0),(30,'离为火','离','离','离',6,3,1,0,0,0),(31,'泽山咸','兑','兑','艮',3,6,0,0,0,0),(32,'雷风恒','震','震','巽',3,6,0,0,0,0),(33,'天山遯','乾','乾','艮',2,5,0,0,0,0),(34,'雷天大壮','坤','震','乾',4,1,1,0,0,0),(35,'火地晋','乾','离','坤',4,1,0,0,1,0),(36,'地火明夷','坎','坤','离',4,1,0,0,1,0),(37,'风火家人','巽','巽','离',2,5,0,0,0,0),(38,'火泽睽','艮','离','兑',4,1,0,0,0,0),(39,'水山蹇','兑','坎','艮',4,1,0,0,0,0),(40,'雷水解','震','震','坎',2,5,0,0,0,0),(41,'山泽损','艮','艮','兑',3,6,0,0,0,0),(42,'风雷益','巽','巽','震',3,6,0,0,0,0),(43,'泽天夬','坤','兑','乾',5,2,0,0,0,0),(44,'天风姤','乾','乾','巽',1,4,0,0,0,0),(45,'泽地萃','兑','兑','坤',2,5,0,0,0,0),(46,'地风升','震','坤','巽',4,1,0,0,0,0),(47,'泽水困','兑','兑','坎',1,4,0,1,0,0),(48,'水风井','震','坎','巽',5,2,0,0,0,0),(49,'泽火革','坎','兑','离',4,1,0,0,0,0),(50,'火风鼎','离','离','巽',2,5,0,0,0,0),(51,'震为雷','震','震','震',6,3,1,0,0,0),(52,'艮为山','艮','艮','艮',6,3,1,0,0,0),(53,'风山渐','艮','巽','艮',3,6,0,0,0,1),(54,'雷泽归妹','兑','震','兑',3,6,0,0,0,1),(55,'雷火丰','坎','震','离',5,2,0,0,0,0),(56,'火山旅','离','离','艮',1,4,0,1,0,0),(57,'巽为风','巽','巽','巽',6,3,1,0,0,0),(58,'兑为泽','兑','兑','兑',6,3,1,0,0,0),(59,'风水涣','离','巽','坎',5,2,0,0,0,0),(60,'水泽节','坎','坎','兑',1,4,0,1,0,0),(61,'风泽中孚','艮','巽','兑',4,1,0,0,1,0),(62,'雷山小过','兑','震','艮',4,1,0,0,1,0),(63,'水火既济','坎','坎','离',3,6,0,0,0,0),(64,'火水未济','离','离','坎',3,6,0,0,0,0);
+/*!40000 ALTER TABLE `liuyao_liushisigua` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `liuyao_wuxing`
+--
+
+DROP TABLE IF EXISTS `liuyao_wuxing`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `liuyao_wuxing` (
+  `wuxing` varchar(250) NOT NULL,
+  `sheng` varchar(250) NOT NULL,
+  `ke` varchar(250) NOT NULL,
+  `beisheng` varchar(250) NOT NULL,
+  `beike` varchar(250) NOT NULL,
+  PRIMARY KEY (`wuxing`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `liuyao_wuxing`
+--
+
+LOCK TABLES `liuyao_wuxing` WRITE;
+/*!40000 ALTER TABLE `liuyao_wuxing` DISABLE KEYS */;
+INSERT INTO `liuyao_wuxing` VALUES ('土','金','水','火','木'),('木','火','土','水','金'),('水','木','火','金','土'),('火','土','金','木','水'),('金','水','木','土','火');
+/*!40000 ALTER TABLE `liuyao_wuxing` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2017-05-17 15:27:53
