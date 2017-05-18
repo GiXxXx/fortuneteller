@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    {% load rest_framework %}
     <title>六爻排盘系统</title>
 </head>
 <body>
-    <ul>
-        {% for gua in bagua %}
-        <li>{{ gua.gua }}</li>
-        {% endfor %}
-    </ul>
+        <form action="{% url 'paipan' %}" method="post">
+            {% csrf_token %}
+            <div>六爻： <input type="text" name="sixth"></div><br>
+            <div>五爻： <input type="text" name="fifth"></div><br>
+            <div>四爻： <input type="text" name="fourth"></div><br>
+            <div>三爻： <input type="text" name="third"></div><br>
+            <div>二爻： <input type="text" name="second"></div><br>
+            <div>初爻： <input type="text" name="first"></div><br>
+            <div><button type="submit" class="btn btn-default">排盘</button></div>
+        </form>
 </body>
 </html>

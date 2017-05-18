@@ -26,7 +26,7 @@ SECRET_KEY = 'v+*t^#ldfr=5#)v*czz8@_759fgp9u#h=)^(=inm=*-$j)&4vl'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '192.168.1.30',
+    '192.168.1.201',
 ]
 
 
@@ -41,10 +41,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dbbackup',
+    'rest_framework'
 ]
 
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
-DBBACKUP_STORAGE_OPTIONS = {'location': '/home/jasongao/Workspace/fortuneteller'}
+DBBACKUP_STORAGE_OPTIONS = {'location': 'C:/Users/Jason/Desktop/fortuneteller/backups'}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        # 'rest_framework.permissions.IsAdminUser',
+    ],
+    'PAGE_SIZE': 10
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,7 +92,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fortuneteller',
-        'USER': 'jasongao',
+        'USER': 'root',
         'PASSWORD': '19921122',
         'HOST': 'localhost',
         'PORT': '3306',
