@@ -8,12 +8,60 @@
 <body>
         <form action="{% url 'paipan' %}" method="post">
             {% csrf_token %}
-            <div>六爻： <input type="text" name="sixth"></div><br>
-            <div>五爻： <input type="text" name="fifth"></div><br>
-            <div>四爻： <input type="text" name="fourth"></div><br>
-            <div>三爻： <input type="text" name="third"></div><br>
-            <div>二爻： <input type="text" name="second"></div><br>
-            <div>初爻： <input type="text" name="first"></div><br>
+            <div>
+                <span>六爻：</span>
+                <select name="liuyao">
+                    <option value="000">老阴</option>
+                    <option value="110">少阴</option>
+                    <option value="111">老阳</option>
+                    <option value="001">少阳</option>
+                </select>
+            </div><br>
+            <div>
+                <span>五爻：</span>
+                <select name="wuyao">
+                    <option value="000">老阴</option>
+                    <option value="110">少阴</option>
+                    <option value="111">老阳</option>
+                    <option value="001">少阳</option>
+                </select>
+            </div><br>
+            <div>
+                <span>四爻：</span>
+                <select name="siyao">
+                    <option value="000">老阴</option>
+                    <option value="110">少阴</option>
+                    <option value="111">老阳</option>
+                    <option value="001">少阳</option>
+                </select>
+            </div><br>
+            <div>
+                <span>三爻：</span>
+                <select name="sanyao">
+                    <option value="000">老阴</option>
+                    <option value="110">少阴</option>
+                    <option value="111">老阳</option>
+                    <option value="001">少阳</option>
+                </select>
+            </div><br>
+            <div>
+                <span>二爻：</span>
+                <select name="eryao">
+                    <option value="000">老阴</option>
+                    <option value="110">少阴</option>
+                    <option value="111">老阳</option>
+                    <option value="001">少阳</option>
+                </select>
+            </div><br>
+            <div>
+                <span>初爻：</span>
+                <select name="chuyao">
+                    <option value="000">老阴</option>
+                    <option value="110">少阴</option>
+                    <option value="111">老阳</option>
+                    <option value="001">少阳</option>
+                </select>
+            </div><br>
             <div><button type="submit" class="btn btn-default">排盘</button></div>
         </form>
 </body>

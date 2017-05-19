@@ -5,9 +5,16 @@ from .models import Dizhi
 from .models import Wuxing
 from .models import Liuqin
 from .models import Huntianjiazi
+from .models import Yao
 
 
 class BaguaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bagua
-        fields = ('url', 'gua', 'fangwei', 'qinshu', 'yuzhou', 'yinyang', 'wuxing', 'guaxiang')
+        fields = ('gua', 'fangwei', 'qinshu', 'yuzhou', 'yinyang', 'wuxing', 'guaxiang')
+
+
+class YaoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Yao
+        fields = ('yao', 'coin', 'name', 'image', 'dong', 'reverse')

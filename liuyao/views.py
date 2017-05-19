@@ -12,8 +12,8 @@ from .models import Dizhi
 from .models import Wuxing
 from .models import Liuqin
 from .models import Huntianjiazi
-from .serializer import BaguaSerializer
-
+from .models import Yao
+from .serializer import YaoSerializer
 # Create your views here.
 def index(request):
     url = 'liuyao/index.html'
@@ -32,7 +32,30 @@ def index(request):
 
 
 class PaipanResult(APIView):
-    def post(self, request, format=None):
-        serializer = BaguaSerializer()
-        return Response(serializer.data)
+    def post(self, request):
+        guaImage = self.getGuaImage(request)
+        return Response(gua)
 
+    def getGuaImage(self, request):
+        yaoSet = Yao.objects.all()
+        yaoSerializer = YaoSerializer(yaoSet, many=True)
+        coinSet = request.data
+        benGua = ""
+        bianGua = ""
+        yaoPositions = ['chuyao', 'eryao', 'sanyao', 'siyao', 'wuyao', 'liuyao']
+        for position in yaoPositions:
+            for yao in yaoSerializer.data:
+                if yao['yao'] == coinSet[position]:
+                    benGua += yao['image']
+                    if yao['dong']:
+                        bianGua += yao['reverse']
+                    else:
+                        bianGua += yao['image']
+
+        return {
+            'benGua': benGua,
+            'bianGua': bianGua
+        }
+
+    def getGua(selfself, guaImage):
+        benGua = Liushisigua.objects.raw("select * from liuyao_liushisigua where ")
