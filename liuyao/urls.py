@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.PaipanInput.as_view(), name='index'),
     url(r'^bagua/', views.PaipanResult.as_view(), name='paipan')
 ]
 

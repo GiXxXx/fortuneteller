@@ -165,6 +165,7 @@ class BoxCalender():
             "yangli": f1,
             "yinli": f2,
             "yuezhi": v3[chinese_month_days_60[1]],
+            "rigan": CHINESE_10_1[int(CHINESE_60[v5][0:2])],
             "rizhi": CHINESE_12_1[int(CHINESE_60[v5][2:4])]
         }
 
@@ -277,7 +278,7 @@ class BoxCalender():
         # print chinese_year +'-' + chinese_month +'-' + str(chinese_day)
 
         chinese_year_60 = '0600' if english_days < 34 else '0701'  # 庚子 '辛丑'
-        chinese_month_60 = u'戊子' if english_days < 6 else (u'乙丑' if english_days < 34 else u'庚寅')
+        chinese_month_60 = u'子' if english_days < 6 else (u'丑' if english_days < 34 else u'寅')
 
         v4 = datetime.date(english_year, english_month, english_day) - datetime.date(1900, 12, 17)  # 日干支
         v5 = v4.days % 60
@@ -297,7 +298,8 @@ class BoxCalender():
             "yangli": f1,
             "yinli": f2,
             "yuezhi": chinese_month_60,
-            "rizhi": c
+            "rigan": CHINESE_10_1[int(CHINESE_60[v5][0:2])],
+            "rizhi": CHINESE_12_1[int(CHINESE_60[v5][2:4])]
         }
 
 

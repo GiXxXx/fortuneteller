@@ -81,3 +81,15 @@ class Yao(models.Model):
 
     def __str__(self):
         return self.name
+
+class Liushen(models.Model):
+    rigan = models.CharField(primary_key='true', max_length=250)
+    liuyao = models.CharField(max_length=250)
+    wuyao = models.CharField(max_length=250)
+    siyao = models.CharField(max_length=250)
+    sanyao = models.CharField(max_length=250)
+    eryao = models.CharField(max_length=250)
+    chuyao = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name

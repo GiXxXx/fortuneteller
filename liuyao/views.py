@@ -6,11 +6,14 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.generics import RetrieveAPIView
 from .models import Bagua
 from .models import Liushisigua
 from .models import Dizhi
 from .models import Wuxing
 from .models import Liuqin
+from .models import Liushen
 from .models import Huntianjiazi
 from .models import Yao
 from .serializer import YaoSerializer
@@ -19,15 +22,22 @@ from .serializer import LiushisiguaSerializer
 from.boxcalender import BoxCalender
 
 # Create your views here.
-yaoSet = Yao.objects.all()
-yao_serializer = YaoSerializer(yaoSet, many=True)
-
-def index(request):
-    url = 'liuyao/index.html'
-    context = {
-        'yao': yaoSet,
-    }
-    return render(request, url, context)
+class PaipanInput(RetrieveAPIView):
+    renderer_classes = (TemplateHTMLRenderer,)
+    def get(self, request):
+        template = 'liuyao/index.html'
+        yao = {
+            'yaoSet': Yao.objects.all(),
+            'nameSet': [
+                {'label': u'六爻', 'name': 'liuyao', 'time': 1},
+                {'label': u'五爻', 'name': 'wuyao', 'time': 2},
+                {'label': u'四爻', 'name': 'siyao', 'time': 3},
+                {'label': u'三爻', 'name': 'sanyao', 'time': 4},
+                {'label': u'二爻', 'name': 'eryao', 'time': 5},
+                {'label': u'初爻', 'name': 'chuyao', 'time': 6}
+            ]
+        }
+        return Response(yao, template_name=template)
 
 # def test(request, id):
 #     try:
@@ -56,6 +66,8 @@ class PaipanResult(APIView):
     def build_gua(self, yao_positions, coin_set):
         ben_gua = ""
         bian_gua = ""
+        yao_set = Yao.objects.all()
+        yao_serializer = YaoSerializer(yao_set, many=True)
         for position in yao_positions:
             for yao in yao_serializer.data:
                 if yao['yao'] == coin_set[position]:
@@ -102,9 +114,6 @@ class PaipanResult(APIView):
 
         # 获得卦的宫位五行
         wuxing = Bagua.objects.filter(gua=gong).first().wuxing
-        bengua['wuxing'] = wuxing
-        biangua['wuxing'] = wuxing
-        shougonggua['wuxing'] = wuxing
 
         # 获得五行六亲的mapper
         wuxing_set = Wuxing.objects.filter(wuxing=wuxing).first()
@@ -117,227 +126,68 @@ class PaipanResult(APIView):
             wuxing_set.beike: liuqin_set.beike
         }
 
-        # 获得卦的各爻地支
-        bengua_neigua_dizhi = Huntianjiazi.objects.filter(gua=bengua_neigua.gua).filter(neiwai=u"内").first()
-        bengua_waigua_dizhi = Huntianjiazi.objects.filter(gua=bengua_neigua.gua).filter(neiwai=u"外").first()
-        biangua_neigua_dizhi = Huntianjiazi.objects.filter(gua=biangua_neigua.gua).filter(neiwai=u"内").first()
-        biangua_waigua_dizhi = Huntianjiazi.objects.filter(gua=biangua_neigua.gua).filter(neiwai=u"外").first()
+        self.put_wuxing_liuqin_dizhi(bengua, bengua_neigua.gua, bengua_waigua.gua, wuxing, wuxing_liuqin_mapper)
+        self.put_wuxing_liuqin_dizhi(biangua, biangua_neigua.gua, biangua_waigua.gua, wuxing, wuxing_liuqin_mapper)
+        self.put_wuxing_liuqin_dizhi(shougonggua, gong, gong, wuxing, wuxing_liuqin_mapper)
 
-        bengua_sixth_yao_dizhi = bengua_waigua_dizhi.san
-        bengua_fifth_yao_dizhi = bengua_waigua_dizhi.er
-        bengua_fourth_yao_dizhi = bengua_waigua_dizhi.chu
-        bengua_third_yao_dizhi = bengua_neigua_dizhi.san
-        bengua_second_yao_dizhi = bengua_neigua_dizhi.er
-        bengua_first_yao_dizhi = bengua_neigua_dizhi.chu
+        self.put_month_day(request, bengua)
 
-        biangua_sixth_yao_dizhi = biangua_waigua_dizhi.san
-        biangua_fifth_yao_dizhi = biangua_waigua_dizhi.er
-        biangua_fourth_yao_dizhi = biangua_waigua_dizhi.chu
-        biangua_third_yao_dizhi = biangua_neigua_dizhi.san
-        biangua_second_yao_dizhi = biangua_neigua_dizhi.er
-        biangua_first_yao_dizhi = biangua_neigua_dizhi.chu
-
-        # 获得卦的各爻五行
-        bengua_sixth_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_sixth_yao_dizhi).first().wuxing
-        bengua_fifth_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_fifth_yao_dizhi).first().wuxing
-        bengua_fourth_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_fourth_yao_dizhi).first().wuxing
-        bengua_third_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_third_yao_dizhi).first().wuxing
-        bengua_second_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_second_yao_dizhi).first().wuxing
-        bengua_first_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_first_yao_dizhi).first().wuxing
-
-        biangua_sixth_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_sixth_yao_dizhi).first().wuxing
-        biangua_fifth_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_fifth_yao_dizhi).first().wuxing
-        biangua_fourth_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_fourth_yao_dizhi).first().wuxing
-        biangua_third_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_third_yao_dizhi).first().wuxing
-        biangua_second_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_second_yao_dizhi).first().wuxing
-        biangua_first_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_first_yao_dizhi).first().wuxing
-
-        # 获得卦的各爻六亲
-        bengua_sixth_yao_liuqin = wuxing_liuqin_mapper[bengua_sixth_yao_wuxing]
-        bengua_fifth_yao_liuqin = wuxing_liuqin_mapper[bengua_fifth_yao_wuxing]
-        bengua_fourth_yao_liuqin = wuxing_liuqin_mapper[bengua_fourth_yao_wuxing]
-        bengua_third_yao_liuqin = wuxing_liuqin_mapper[bengua_third_yao_wuxing]
-        bengua_second_yao_liuqin = wuxing_liuqin_mapper[bengua_second_yao_wuxing]
-        bengua_first_yao_liuqin = wuxing_liuqin_mapper[bengua_first_yao_wuxing]
-
-        biangua_sixth_yao_liuqin = wuxing_liuqin_mapper[biangua_sixth_yao_wuxing]
-        biangua_fifth_yao_liuqin = wuxing_liuqin_mapper[biangua_fifth_yao_wuxing]
-        biangua_fourth_yao_liuqin = wuxing_liuqin_mapper[biangua_fourth_yao_wuxing]
-        biangua_third_yao_liuqin = wuxing_liuqin_mapper[biangua_third_yao_wuxing]
-        biangua_second_yao_liuqin = wuxing_liuqin_mapper[biangua_second_yao_wuxing]
-        biangua_first_yao_liuqin = wuxing_liuqin_mapper[biangua_first_yao_wuxing]
-
-        # 附上卦的六亲地支五行信息
-        bengua['liuyao_liuqin'] = bengua_sixth_yao_liuqin
-        bengua['wuyao_liuqin'] = bengua_fifth_yao_liuqin
-        bengua['siyao_liuqin'] = bengua_fourth_yao_liuqin
-        bengua['sanyao_liuqin'] = bengua_third_yao_liuqin
-        bengua['eryao_liuqin'] = bengua_second_yao_liuqin
-        bengua['chuyao_liuqin'] = bengua_first_yao_liuqin
-
-        bengua['liuyao_dizhi'] = bengua_sixth_yao_dizhi
-        bengua['wuyao_dizhi'] = bengua_fifth_yao_dizhi
-        bengua['siyao_dizhi'] = bengua_fourth_yao_dizhi
-        bengua['sanyao_dizhi'] = bengua_third_yao_dizhi
-        bengua['eryao_dizhi'] = bengua_second_yao_dizhi
-        bengua['chuyao_dizhi'] = bengua_first_yao_dizhi
-
-        bengua['liuyao_wuxing'] = bengua_sixth_yao_wuxing
-        bengua['wuyao_wuxing'] = bengua_fifth_yao_wuxing
-        bengua['siyao_wuxing'] = bengua_fourth_yao_wuxing
-        bengua['sanyao_wuxing'] = bengua_third_yao_wuxing
-        bengua['eryao_wuxing'] = bengua_second_yao_wuxing
-        bengua['chuyao_wuxing'] = bengua_first_yao_wuxing
-
-        biangua['liuyao_liuqin'] = biangua_sixth_yao_liuqin
-        biangua['wuyao_liuqin'] = biangua_fifth_yao_liuqin
-        biangua['siyao_liuqin'] = biangua_fourth_yao_liuqin
-        biangua['sanyao_liuqin'] = biangua_third_yao_liuqin
-        biangua['eryao_liuqin'] = biangua_second_yao_liuqin
-        biangua['chuyao_liuqin'] = biangua_first_yao_liuqin
-
-        biangua['liuyao_dizhi'] = biangua_sixth_yao_dizhi
-        biangua['wuyao_dizhi'] = biangua_fifth_yao_dizhi
-        biangua['siyao_dizhi'] = biangua_fourth_yao_dizhi
-        biangua['sanyao_dizhi'] = biangua_third_yao_dizhi
-        biangua['eryao_dizhi'] = biangua_second_yao_dizhi
-        biangua['chuyao_dizhi'] = biangua_first_yao_dizhi
-
-        biangua['liuyao_wuxing'] = biangua_sixth_yao_wuxing
-        biangua['wuyao_wuxing'] = biangua_fifth_yao_wuxing
-        biangua['siyao_wuxing'] = biangua_fourth_yao_wuxing
-        biangua['sanyao_wuxing'] = biangua_third_yao_wuxing
-        biangua['eryao_wuxing'] = biangua_second_yao_wuxing
-        biangua['chuyao_wuxing'] = biangua_first_yao_wuxing
-
-        self.put_month_day(request, bengua, biangua)
+        self.put_liushen(bengua)
 
         return {
             'bengua': bengua,
-            'biangua': biangua
+            'biangua': biangua,
+            'shougonggua': shougonggua
         }
 
-    def put_wuxing_liuqin_dizhi(self, gua):
-        # 获得卦的宫位五行
-        wuxing = Bagua.objects.filter(gua=gong).first().wuxing
-        bengua['wuxing'] = wuxing
-        biangua['wuxing'] = wuxing
-        shougonggua['wuxing'] = wuxing
-
-        # 获得五行六亲的mapper
-        wuxing_set = Wuxing.objects.filter(wuxing=wuxing).first()
-        liuqin_set = Liuqin.objects.filter(liuqin=u"兄弟").first()
-        wuxing_liuqin_mapper = {
-            wuxing_set.wuxing: liuqin_set.liuqin,
-            wuxing_set.sheng: liuqin_set.sheng,
-            wuxing_set.ke: liuqin_set.beike,
-            wuxing_set.beisheng: liuqin_set.beisheng,
-            wuxing_set.beike: liuqin_set.beike
-        }
+    def put_wuxing_liuqin_dizhi(self, gua, gua_neigua, gua_waigua, wuxing, wuxing_liuqin_mapper):
+        # 放入卦的宫位五行
+        gua['wuxing'] = wuxing
 
         # 获得卦的各爻地支
-        bengua_neigua_dizhi = Huntianjiazi.objects.filter(gua=bengua_neigua.gua).filter(neiwai=u"内").first()
-        bengua_waigua_dizhi = Huntianjiazi.objects.filter(gua=bengua_neigua.gua).filter(neiwai=u"外").first()
-        biangua_neigua_dizhi = Huntianjiazi.objects.filter(gua=biangua_neigua.gua).filter(neiwai=u"内").first()
-        biangua_waigua_dizhi = Huntianjiazi.objects.filter(gua=biangua_neigua.gua).filter(neiwai=u"外").first()
+        gua_neigua_dizhi = Huntianjiazi.objects.filter(gua=gua_neigua).filter(neiwai=u"内").first()
+        gua_waigua_dizhi = Huntianjiazi.objects.filter(gua=gua_waigua).filter(neiwai=u"外").first()
 
-        bengua_sixth_yao_dizhi = bengua_waigua_dizhi.san
-        bengua_fifth_yao_dizhi = bengua_waigua_dizhi.er
-        bengua_fourth_yao_dizhi = bengua_waigua_dizhi.chu
-        bengua_third_yao_dizhi = bengua_neigua_dizhi.san
-        bengua_second_yao_dizhi = bengua_neigua_dizhi.er
-        bengua_first_yao_dizhi = bengua_neigua_dizhi.chu
+        gua['liuyao_dizhi'] = gua_waigua_dizhi.san
+        gua['wuyao_dizhi'] = gua_waigua_dizhi.er
+        gua['siyao_dizhi'] = gua_waigua_dizhi.chu
+        gua['sanyao_dizhi'] = gua_neigua_dizhi.san
+        gua['eryao_dizhi'] = gua_neigua_dizhi.er
+        gua['chuyao_dizhi'] = gua_neigua_dizhi.chu
 
-        biangua_sixth_yao_dizhi = biangua_waigua_dizhi.san
-        biangua_fifth_yao_dizhi = biangua_waigua_dizhi.er
-        biangua_fourth_yao_dizhi = biangua_waigua_dizhi.chu
-        biangua_third_yao_dizhi = biangua_neigua_dizhi.san
-        biangua_second_yao_dizhi = biangua_neigua_dizhi.er
-        biangua_first_yao_dizhi = biangua_neigua_dizhi.chu
+        dizhi_name_set = ['liuyao_dizhi', 'wuyao_dizhi', 'siyao_dizhi', 'sanyao_dizhi', 'eryao_dizhi',
+                          'chuyao_dizhi']
+        wuxing_name_set = ['liuyao_wuxing', 'wuyao_wuxing', 'siyao_wuxing', 'sanyao_wuxing', 'eryao_wuxing',
+                           'chuyao_wuxing']
+        liuqin_name_set = ['liuyao_liuqin', 'wuyao_liuqin', 'siyao_liuqin', 'sanyao_liuqin', 'eryao_liuqin',
+                           'chuyao_liuqin']
 
-        # 获得卦的各爻五行
-        bengua_sixth_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_sixth_yao_dizhi).first().wuxing
-        bengua_fifth_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_fifth_yao_dizhi).first().wuxing
-        bengua_fourth_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_fourth_yao_dizhi).first().wuxing
-        bengua_third_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_third_yao_dizhi).first().wuxing
-        bengua_second_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_second_yao_dizhi).first().wuxing
-        bengua_first_yao_wuxing = Dizhi.objects.filter(dizhi=bengua_first_yao_dizhi).first().wuxing
+        # 获得卦的各爻五行六亲
+        for i in range(0, 6):
+            gua[wuxing_name_set[i]] = Dizhi.objects.filter(dizhi=gua[dizhi_name_set[i]]).first().wuxing
+            gua[liuqin_name_set[i]] = wuxing_liuqin_mapper[gua[wuxing_name_set[i]]]
 
-        biangua_sixth_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_sixth_yao_dizhi).first().wuxing
-        biangua_fifth_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_fifth_yao_dizhi).first().wuxing
-        biangua_fourth_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_fourth_yao_dizhi).first().wuxing
-        biangua_third_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_third_yao_dizhi).first().wuxing
-        biangua_second_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_second_yao_dizhi).first().wuxing
-        biangua_first_yao_wuxing = Dizhi.objects.filter(dizhi=biangua_first_yao_dizhi).first().wuxing
+        return
 
-        # 获得卦的各爻六亲
-        bengua_sixth_yao_liuqin = wuxing_liuqin_mapper[bengua_sixth_yao_wuxing]
-        bengua_fifth_yao_liuqin = wuxing_liuqin_mapper[bengua_fifth_yao_wuxing]
-        bengua_fourth_yao_liuqin = wuxing_liuqin_mapper[bengua_fourth_yao_wuxing]
-        bengua_third_yao_liuqin = wuxing_liuqin_mapper[bengua_third_yao_wuxing]
-        bengua_second_yao_liuqin = wuxing_liuqin_mapper[bengua_second_yao_wuxing]
-        bengua_first_yao_liuqin = wuxing_liuqin_mapper[bengua_first_yao_wuxing]
-
-        biangua_sixth_yao_liuqin = wuxing_liuqin_mapper[biangua_sixth_yao_wuxing]
-        biangua_fifth_yao_liuqin = wuxing_liuqin_mapper[biangua_fifth_yao_wuxing]
-        biangua_fourth_yao_liuqin = wuxing_liuqin_mapper[biangua_fourth_yao_wuxing]
-        biangua_third_yao_liuqin = wuxing_liuqin_mapper[biangua_third_yao_wuxing]
-        biangua_second_yao_liuqin = wuxing_liuqin_mapper[biangua_second_yao_wuxing]
-        biangua_first_yao_liuqin = wuxing_liuqin_mapper[biangua_first_yao_wuxing]
-
-        # 附上卦的六亲地支五行信息
-        bengua['liuyao_liuqin'] = bengua_sixth_yao_liuqin
-        bengua['wuyao_liuqin'] = bengua_fifth_yao_liuqin
-        bengua['siyao_liuqin'] = bengua_fourth_yao_liuqin
-        bengua['sanyao_liuqin'] = bengua_third_yao_liuqin
-        bengua['eryao_liuqin'] = bengua_second_yao_liuqin
-        bengua['chuyao_liuqin'] = bengua_first_yao_liuqin
-
-        bengua['liuyao_dizhi'] = bengua_sixth_yao_dizhi
-        bengua['wuyao_dizhi'] = bengua_fifth_yao_dizhi
-        bengua['siyao_dizhi'] = bengua_fourth_yao_dizhi
-        bengua['sanyao_dizhi'] = bengua_third_yao_dizhi
-        bengua['eryao_dizhi'] = bengua_second_yao_dizhi
-        bengua['chuyao_dizhi'] = bengua_first_yao_dizhi
-
-        bengua['liuyao_wuxing'] = bengua_sixth_yao_wuxing
-        bengua['wuyao_wuxing'] = bengua_fifth_yao_wuxing
-        bengua['siyao_wuxing'] = bengua_fourth_yao_wuxing
-        bengua['sanyao_wuxing'] = bengua_third_yao_wuxing
-        bengua['eryao_wuxing'] = bengua_second_yao_wuxing
-        bengua['chuyao_wuxing'] = bengua_first_yao_wuxing
-
-        biangua['liuyao_liuqin'] = biangua_sixth_yao_liuqin
-        biangua['wuyao_liuqin'] = biangua_fifth_yao_liuqin
-        biangua['siyao_liuqin'] = biangua_fourth_yao_liuqin
-        biangua['sanyao_liuqin'] = biangua_third_yao_liuqin
-        biangua['eryao_liuqin'] = biangua_second_yao_liuqin
-        biangua['chuyao_liuqin'] = biangua_first_yao_liuqin
-
-        biangua['liuyao_dizhi'] = biangua_sixth_yao_dizhi
-        biangua['wuyao_dizhi'] = biangua_fifth_yao_dizhi
-        biangua['siyao_dizhi'] = biangua_fourth_yao_dizhi
-        biangua['sanyao_dizhi'] = biangua_third_yao_dizhi
-        biangua['eryao_dizhi'] = biangua_second_yao_dizhi
-        biangua['chuyao_dizhi'] = biangua_first_yao_dizhi
-
-        biangua['liuyao_wuxing'] = biangua_sixth_yao_wuxing
-        biangua['wuyao_wuxing'] = biangua_fifth_yao_wuxing
-        biangua['siyao_wuxing'] = biangua_fourth_yao_wuxing
-        biangua['sanyao_wuxing'] = biangua_third_yao_wuxing
-        biangua['eryao_wuxing'] = biangua_second_yao_wuxing
-        biangua['chuyao_wuxing'] = biangua_first_yao_wuxing
-
-    def put_month_day(self, request, bengua, biangua):
+    def put_month_day(self, request, bengua):
         date = request.data['date']
         year = date[0:4]
         month = date[5:7]
         day = date[8:10]
         ganzhi = BoxCalender().day(int(year),int(month),int(day))
-        bengua["yuezhi"] = ganzhi["yuezhi"]
-        bengua["rizhi"] = ganzhi["rizhi"]
-        biangua["yuezhi"] = ganzhi["yuezhi"]
-        biangua["rizhi"] = ganzhi["rizhi"]
+        bengua['yuezhi'] = ganzhi['yuezhi']
+        bengua['rizhi'] = ganzhi['rizhi']
+        bengua['rigan'] = ganzhi['rigan']
+        return
+
+    def put_liushen(self, gua):
+        liushen_set = Liushen.objects.filter(rigan=gua['rigan']).first()
+        gua['liuyao_liushen'] = liushen_set.liuyao
+        gua['wuyao_liushen'] = liushen_set.wuyao
+        gua['siyao_liushen'] = liushen_set.siyao
+        gua['sanyao_liushen'] = liushen_set.sanyao
+        gua['eryao_liushen'] = liushen_set.eryao
+        gua['chuyao_liushen'] = liushen_set.chuyao
         return
 
 
