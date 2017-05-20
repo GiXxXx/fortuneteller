@@ -18,3 +18,9 @@ class YaoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Yao
         fields = ('yao', 'coin', 'name', 'image', 'dong', 'reverse')
+
+class LiushisiguaSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Liushisigua
+        fields = ('xu', 'gua', 'gong', 'waigua', 'neigua', 'shi', 'ying', 'liuchong',
+                  'liuhe', 'youhun', 'guihun')
