@@ -8,6 +8,7 @@
 <body>
         <form action="{% url 'paipan' %}" method="post">
             {% csrf_token %}
+            <div><span>阳历：</span><span><input type="date" name="date"></span></div>
             <div>
                 <span>六爻：</span>
                 <select name="liuyao">
