@@ -1,23 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from django.http import Http404
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.generics import RetrieveAPIView
-from .models import Bagua
+from .const import LiuYaoData
 from .models import Liushisigua
 from .models import Dizhi
 from .models import Wuxing
 from .models import Liuqin
 from .models import Liushen
 from .models import Huntianjiazi
-from .models import Yao
-from .serializer import YaoSerializer
-from .serializer import BaguaSerializer
 from .serializer import LiushisiguaSerializer
 from.boxcalender import BoxCalender
 
@@ -45,45 +39,40 @@ liuqin_feishen_name_set = ['liuyao_feishen_liuqin', 'wuyao_feishen_liuqin', 'siy
                    'chuyao_feishen_liuqin']
 
 yao_name_set = [
-                {'label': u'六爻', 'name': 'liuyao', 'time': 6},
-                {'label': u'五爻', 'name': 'wuyao', 'time': 5},
-                {'label': u'四爻', 'name': 'siyao', 'time': 4},
-                {'label': u'三爻', 'name': 'sanyao', 'time': 3},
-                {'label': u'二爻', 'name': 'eryao', 'time': 2},
-                {'label': u'初爻', 'name': 'chuyao', 'time': 1}
+                {'label': '六爻', 'name': 'liuyao', 'time': 6},
+                {'label': '五爻', 'name': 'wuyao', 'time': 5},
+                {'label': '四爻', 'name': 'siyao', 'time': 4},
+                {'label': '三爻', 'name': 'sanyao', 'time': 3},
+                {'label': '二爻', 'name': 'eryao', 'time': 2},
+                {'label': '初爻', 'name': 'chuyao', 'time': 1}
             ]
 
 gender_mapper = {
-    'male': u'男',
-    'female': u'女'
+    'male': '男',
+    'female': '女'
 }
 
 matter_mapper = {
-    'shiye': u'事业',
-    'hunyin': u'婚姻',
-    'caiwu': u'财物',
-    'kaoshi': u'考试',
-    'xunren': u'寻人',
-    'xunwu': u'寻物',
-    'jiankang': u'健康'
+    'shiye': '事业',
+    'hunyin': '婚姻',
+    'caiwu': '财物',
+    'kaoshi': '考试',
+    'xunren': '寻人',
+    'xunwu': '寻物',
+    'jiankang': '健康'
 }
+
 # Create your views here.
-class PaipanInput(RetrieveAPIView):
-    renderer_classes = (TemplateHTMLRenderer,)
+class PaipanInput(APIView):
     def get(self, request):
-        template = 'liuyao/liuyao.html'
         yao = {
-            'yaoSet': Yao.objects.all(),
             'nameSet': yao_name_set,
             'input_display': 'display:block;',
             'result_display': 'display:none;'
         }
-        return Response(yao, template_name=template)
+        return Response(yao)
 
-class PaipanResult(RetrieveAPIView):
-    renderer_classes = (TemplateHTMLRenderer,)
     def post(self, request):
-        template = 'liuyao/liuyao.html'
         gua_image = self.get_gua_image(request)
         gua_detail = self.get_gua(request, gua_image)
         yao_detail = self.get_gua_detail_view(gua_detail)
@@ -94,7 +83,7 @@ class PaipanResult(RetrieveAPIView):
             'result_display': 'display:block;',
             'detail': yao_detail
         }
-        return Response(paipan_result, template_name=template)
+        return Response(paipan_result)
 
     def get_gua_image(self, request):
         yao_positions_for_nei_gua = ['sanyao', 'eryao', 'chuyao']
@@ -110,10 +99,10 @@ class PaipanResult(RetrieveAPIView):
     def build_gua(self, yao_positions, coin_set):
         ben_gua = ""
         bian_gua = ""
-        yao_set = Yao.objects.all()
-        yao_serializer = YaoSerializer(yao_set, many=True)
         for position in yao_positions:
-            for yao in yao_serializer.data:
+            for yao in LiuYaoData.yao:
+                print("asdasd")
+                print(yao)
                 if yao['yao'] == coin_set[position]:
                     ben_gua += yao['image']
                     if yao['dong']:
@@ -131,10 +120,10 @@ class PaipanResult(RetrieveAPIView):
         biangua_neigua_image = guaImage['neigua']['biangua']
         biangua_waigua_image = guaImage['waigua']['biangua']
 
-        bengua_neigua = Bagua.objects.filter(guaxiang=bengua_neigua_image).first()
-        bengua_waigua = Bagua.objects.filter(guaxiang=bengua_waigua_image).first()
-        biangua_neigua = Bagua.objects.filter(guaxiang=biangua_neigua_image).first()
-        biangua_waigua = Bagua.objects.filter(guaxiang=biangua_waigua_image).first()
+        bengua_neigua = LiuYaoData.bagua.objects.filter(guaxiang=bengua_neigua_image).first()
+        bengua_waigua = LiuYaoData.bagua.objects.filter(guaxiang=bengua_waigua_image).first()
+        biangua_neigua = LiuYaoData.bagua.objects.filter(guaxiang=biangua_neigua_image).first()
+        biangua_waigua = LiuYaoData.bagua.objects.filter(guaxiang=biangua_waigua_image).first()
 
         # 获得六十四卦的本卦信息
         bengua = LiushisiguaSerializer(Liushisigua.objects.filter(neigua=bengua_neigua.gua)
@@ -157,7 +146,7 @@ class PaipanResult(RetrieveAPIView):
                                         .first()).data
 
         # 获得卦的宫位五行
-        wuxing = Bagua.objects.filter(gua=gong).first().wuxing
+        wuxing = LiuYaoData.bagua.objects.filter(gua=gong).first().wuxing
 
         # 获得五行六亲的mapper
         wuxing_set = Wuxing.objects.filter(wuxing=wuxing).first()
@@ -281,26 +270,26 @@ class PaipanResult(RetrieveAPIView):
     def get_yao_xiang(self, gua, yao_position_number):
         image = gua['guaxiang']
         if image[yao_position_number-1] == '0':
-            yao_image = u'▅▅▅▅▅'
+            yao_image = '▅▅▅▅▅'
         else:
-            yao_image = u'▅▅　▅▅'
+            yao_image = '▅▅　▅▅'
 
         if gua['shi'] == yao_position_number:
-            yao_image += u' (世)'
+            yao_image += ' (世)'
         elif gua['ying'] == yao_position_number:
-            yao_image += u' (应)'
+            yao_image += ' (应)'
 
         return yao_image
 
     def put_gua_chong_he_you_gui(self, gua):
         if gua['liuhe']:
-            gua['gua'] += u' (六合)'
+            gua['gua'] += ' (六合)'
         elif gua['liuchong']:
-            gua['gua'] += u' (六冲)'
+            gua['gua'] += ' (六冲)'
         elif gua['youhun']:
-            gua['gua'] += u' (游魂)'
+            gua['gua'] += ' (游魂)'
         elif gua['guihun']:
-            gua['gua'] += u' (归魂)'
+            gua['gua'] += ' (归魂)'
 
     def put_dong_mark(self, bengua, biangua, yao_position_number, detail_view_set, i):
         if bengua['guaxiang'][yao_position_number-1] != biangua['guaxiang'][yao_position_number-1]:
