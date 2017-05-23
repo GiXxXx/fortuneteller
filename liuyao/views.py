@@ -9,8 +9,8 @@ from .const import LiuYaoData
 from .boxcalender import BoxCalender
 
 
-# Create your views here.
-class PaipanInput(APIView):
+# Paipan views here.
+class Paipan(APIView):
     def get(self, request):
         yao = {
             'nameSet': LiuYaoData.yao_name_set,
@@ -270,3 +270,38 @@ class PaipanInput(APIView):
                     filtered_array.append(data)
 
         return filtered_array
+
+
+# Jiegua views here.
+class Jiegua(APIView):
+    # def get(self, request):
+    #     yao = {
+    #         'nameSet': LiuYaoData.yao_name_set,
+    #         'input_display': 'display:block;',
+    #         'result_display': 'display:none;'
+    #     }
+    #     return Response(yao)
+
+    # def post(self, request):
+    #     gua_image = self.get_gua_image(request)
+    #     gua_detail = self.get_gua(request, gua_image)
+    #     yao_detail = self.get_gua_detail_view(gua_detail)
+    #     paipan_result = {
+    #         'bengua': gua_detail['bengua'],
+    #         'biangua': gua_detail['biangua'],
+    #         'input_display': 'display:none;',
+    #         'result_display': 'display:block;',
+    #         'detail': yao_detail
+    #     }
+    #     return Response(paipan_result)
+
+    def get_dong_jing_wang_xiang_xiu_qiu(self, request):
+        return
+
+    def get_yao_sheng_ke(self, request):
+        return
+
+    def get_ri_yue(self, request):
+        return
+    
+    
