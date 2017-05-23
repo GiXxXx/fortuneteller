@@ -8,65 +8,12 @@ from rest_framework.generics import RetrieveAPIView
 from .const import LiuYaoData
 from .boxcalender import BoxCalender
 
-dizhi_name_set = ['liuyao_dizhi', 'wuyao_dizhi', 'siyao_dizhi', 'sanyao_dizhi', 'eryao_dizhi',
-                  'chuyao_dizhi']
-wuxing_name_set = ['liuyao_wuxing', 'wuyao_wuxing', 'siyao_wuxing', 'sanyao_wuxing', 'eryao_wuxing',
-                   'chuyao_wuxing']
-liuqin_name_set = ['liuyao_liuqin', 'wuyao_liuqin', 'siyao_liuqin', 'sanyao_liuqin', 'eryao_liuqin',
-                   'chuyao_liuqin']
-liushen_name_set = ['liuyao_liushen', 'wuyao_liushen', 'siyao_liushen', 'sanyao_liushen', 'eryao_liushen',
-                    'chuyao_liushen']
-
-dizhi_fushen_name_set = ['liuyao_fushen_dizhi', 'wuyao_fushen_dizhi', 'siyao_fushen_dizhi', 'sanyao_fushen_dizhi',
-                         'eryao_fushen_dizhi',
-                         'chuyao_fushen_dizhi']
-wuxing_fushen_name_set = ['liuyao_fushen_wuxing', 'wuyao_fushen_wuxing', 'siyao_fushen_wuxing', 'sanyao_fushen_wuxing',
-                          'eryao_fushen_wuxing',
-                          'chuyao_fushen_wuxing']
-liuqin_fushen_name_set = ['liuyao_fushen_liuqin', 'wuyao_fushen_liuqin', 'siyao_fushen_liuqin', 'sanyao_fushen_liuqin',
-                          'eryao_fushen_liuqin',
-                          'chuyao_fushen_liuqin']
-
-dizhi_feishen_name_set = ['liuyao_feishen_dizhi', 'wuyao_feishen_dizhi', 'siyao_feishen_dizhi', 'sanyao_feishen_dizhi',
-                          'eryao_feishen_dizhi',
-                          'chuyao_feishen_dizhi']
-wuxing_feishen_name_set = ['liuyao_feishen_wuxing', 'wuyao_feishen_wuxing', 'siyao_feishen_wuxing',
-                           'sanyao_feishen_wuxing', 'eryao_feishen_wuxing',
-                           'chuyao_feishen_wuxing']
-liuqin_feishen_name_set = ['liuyao_feishen_liuqin', 'wuyao_feishen_liuqin', 'siyao_feishen_liuqin',
-                           'sanyao_feishen_liuqin', 'eryao_feishen_liuqin',
-                           'chuyao_feishen_liuqin']
-
-yao_name_set = [
-    {'label': '六爻', 'name': 'liuyao', 'time': 6},
-    {'label': '五爻', 'name': 'wuyao', 'time': 5},
-    {'label': '四爻', 'name': 'siyao', 'time': 4},
-    {'label': '三爻', 'name': 'sanyao', 'time': 3},
-    {'label': '二爻', 'name': 'eryao', 'time': 2},
-    {'label': '初爻', 'name': 'chuyao', 'time': 1}
-]
-
-gender_mapper = {
-    'male': '男',
-    'female': '女'
-}
-
-matter_mapper = {
-    'shiye': '事业',
-    'hunyin': '婚姻',
-    'caiwu': '财物',
-    'kaoshi': '考试',
-    'xunren': '寻人',
-    'xunwu': '寻物',
-    'jiankang': '健康'
-}
-
 
 # Create your views here.
 class PaipanInput(APIView):
     def get(self, request):
         yao = {
-            'nameSet': yao_name_set,
+            'nameSet': LiuYaoData.yao_name_set,
             'input_display': 'display:block;',
             'result_display': 'display:none;'
         }
@@ -199,9 +146,9 @@ class PaipanInput(APIView):
 
         # 获得卦的各爻五行六亲
         for i in range(0, 6):
-            gua[wuxing_name_set[i]] = self.filter_json_by_key('dizhi', gua[dizhi_name_set[i]], LiuYaoData.dizhi)[
+            gua[LiuYaoData.wuxing_name_set[i]] = self.filter_json_by_key('dizhi', gua[LiuYaoData.dizhi_name_set[i]], LiuYaoData.dizhi)[
                 'wuxing']
-            gua[liuqin_name_set[i]] = wuxing_liuqin_mapper[gua[wuxing_name_set[i]]]
+            gua[LiuYaoData.liuqin_name_set[i]] = wuxing_liuqin_mapper[gua[LiuYaoData.wuxing_name_set[i]]]
 
         return
 
@@ -228,25 +175,25 @@ class PaipanInput(APIView):
 
     def put_fushen_feishen(self, bengua, shougonggua):
         bengua_liuqin_set = []
-        for key in liuqin_name_set:
+        for key in LiuYaoData.liuqin_name_set:
             bengua_liuqin_set.append(bengua[key])
 
         for i in range(0, 6):
-            if shougonggua[liuqin_name_set[i]] not in bengua_liuqin_set:
-                bengua[liuqin_fushen_name_set[i]] = shougonggua[liuqin_name_set[i]]
-                bengua[wuxing_fushen_name_set[i]] = shougonggua[wuxing_name_set[i]]
-                bengua[dizhi_fushen_name_set[i]] = shougonggua[dizhi_name_set[i]]
-                bengua[liuqin_feishen_name_set[i]] = bengua[liuqin_name_set[i]]
-                bengua[wuxing_feishen_name_set[i]] = bengua[wuxing_name_set[i]]
-                bengua[dizhi_feishen_name_set[i]] = bengua[dizhi_name_set[i]]
+            if shougonggua[LiuYaoData.liuqin_name_set[i]] not in bengua_liuqin_set:
+                bengua[LiuYaoData.liuqin_fushen_name_set[i]] = shougonggua[LiuYaoData.liuqin_name_set[i]]
+                bengua[LiuYaoData.wuxing_fushen_name_set[i]] = shougonggua[LiuYaoData.wuxing_name_set[i]]
+                bengua[LiuYaoData.dizhi_fushen_name_set[i]] = shougonggua[LiuYaoData.dizhi_name_set[i]]
+                bengua[LiuYaoData.liuqin_feishen_name_set[i]] = bengua[LiuYaoData.liuqin_name_set[i]]
+                bengua[LiuYaoData.wuxing_feishen_name_set[i]] = bengua[LiuYaoData.wuxing_name_set[i]]
+                bengua[LiuYaoData.dizhi_feishen_name_set[i]] = bengua[LiuYaoData.dizhi_name_set[i]]
 
         return
 
     def put_other_info(self, bengua, request):
         gender = request.data['gender']
         matter = request.data['matter']
-        bengua['gender'] = gender_mapper[gender]
-        bengua['matter'] = matter_mapper[matter]
+        bengua['gender'] = LiuYaoData.gender_mapper[gender]
+        bengua['matter'] = LiuYaoData.matter_mapper[matter]
         return
 
     def get_gua_detail_view(self, gua):
@@ -255,20 +202,20 @@ class PaipanInput(APIView):
         detail_view_set = [{}, {}, {}, {}, {}, {}]
         for i in range(0, 6):
             print(detail_view_set[i])
-            detail_view_set[i]['liushen'] = gua['bengua'][liushen_name_set[i]]
-            detail_view_set[i]['yao'] = gua['bengua'][liuqin_name_set[i]] + gua['bengua'][dizhi_name_set[i]] + \
+            detail_view_set[i]['liushen'] = gua['bengua'][LiuYaoData.liushen_name_set[i]]
+            detail_view_set[i]['yao'] = gua['bengua'][LiuYaoData.liuqin_name_set[i]] + gua['bengua'][LiuYaoData.dizhi_name_set[i]] + \
                                         gua['bengua'][
-                                            wuxing_name_set[i]]
-            detail_view_set[i]['yao_xiang'] = self.get_yao_xiang(gua['bengua'], yao_name_set[i]['time'])
-            detail_view_set[i]['bian_yao'] = gua['biangua'][liuqin_name_set[i]] + gua['biangua'][dizhi_name_set[i]] + \
+                                            LiuYaoData.wuxing_name_set[i]]
+            detail_view_set[i]['yao_xiang'] = self.get_yao_xiang(gua['bengua'], LiuYaoData.yao_name_set[i]['time'])
+            detail_view_set[i]['bian_yao'] = gua['biangua'][LiuYaoData.liuqin_name_set[i]] + gua['biangua'][LiuYaoData.dizhi_name_set[i]] + \
                                              gua['biangua'][
-                                                 wuxing_name_set[i]]
-            detail_view_set[i]['bian_yao_xiang'] = self.get_yao_xiang(gua['biangua'], yao_name_set[i]['time'])
-            self.put_dong_mark(gua['bengua'], gua['biangua'], yao_name_set[i]['time'], detail_view_set, i)
+                                                 LiuYaoData.wuxing_name_set[i]]
+            detail_view_set[i]['bian_yao_xiang'] = self.get_yao_xiang(gua['biangua'], LiuYaoData.yao_name_set[i]['time'])
+            self.put_dong_mark(gua['bengua'], gua['biangua'], LiuYaoData.yao_name_set[i]['time'], detail_view_set, i)
 
-            if liuqin_fushen_name_set[i] in gua['bengua']:
-                detail_view_set[i]['fushen'] = gua['bengua'][liuqin_fushen_name_set[i]] + gua['bengua'][
-                    dizhi_fushen_name_set[i]] + gua['bengua'][wuxing_fushen_name_set[i]]
+            if LiuYaoData.liuqin_fushen_name_set[i] in gua['bengua']:
+                detail_view_set[i]['fushen'] = gua['bengua'][LiuYaoData.liuqin_fushen_name_set[i]] + gua['bengua'][
+                    LiuYaoData.dizhi_fushen_name_set[i]] + gua['bengua'][LiuYaoData.wuxing_fushen_name_set[i]]
             else:
                 detail_view_set[i]['fushen'] = ''
 

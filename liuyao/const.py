@@ -191,3 +191,57 @@ class LiuYaoData:
          "liuhe": 0, "youhun": 0, "guihun": 0},
         {"xu": 64, "gua": "火水未济", "gong": "离", "waigua": "离", "neigua": "坎", "shi": 3, "ying": 6, "liuchong": 0,
          "liuhe": 0, "youhun": 0, "guihun": 0}]
+
+
+    dizhi_name_set = ['liuyao_dizhi', 'wuyao_dizhi', 'siyao_dizhi', 'sanyao_dizhi', 'eryao_dizhi',
+                    'chuyao_dizhi']
+    wuxing_name_set = ['liuyao_wuxing', 'wuyao_wuxing', 'siyao_wuxing', 'sanyao_wuxing', 'eryao_wuxing',
+                    'chuyao_wuxing']
+    liuqin_name_set = ['liuyao_liuqin', 'wuyao_liuqin', 'siyao_liuqin', 'sanyao_liuqin', 'eryao_liuqin',
+                    'chuyao_liuqin']
+    liushen_name_set = ['liuyao_liushen', 'wuyao_liushen', 'siyao_liushen', 'sanyao_liushen', 'eryao_liushen',
+                        'chuyao_liushen']
+
+    dizhi_fushen_name_set = ['liuyao_fushen_dizhi', 'wuyao_fushen_dizhi', 'siyao_fushen_dizhi', 'sanyao_fushen_dizhi',
+                            'eryao_fushen_dizhi',
+                            'chuyao_fushen_dizhi']
+    wuxing_fushen_name_set = ['liuyao_fushen_wuxing', 'wuyao_fushen_wuxing', 'siyao_fushen_wuxing', 'sanyao_fushen_wuxing',
+                            'eryao_fushen_wuxing',
+                            'chuyao_fushen_wuxing']
+    liuqin_fushen_name_set = ['liuyao_fushen_liuqin', 'wuyao_fushen_liuqin', 'siyao_fushen_liuqin', 'sanyao_fushen_liuqin',
+                            'eryao_fushen_liuqin',
+                            'chuyao_fushen_liuqin']
+
+    dizhi_feishen_name_set = ['liuyao_feishen_dizhi', 'wuyao_feishen_dizhi', 'siyao_feishen_dizhi', 'sanyao_feishen_dizhi',
+                            'eryao_feishen_dizhi',
+                            'chuyao_feishen_dizhi']
+    wuxing_feishen_name_set = ['liuyao_feishen_wuxing', 'wuyao_feishen_wuxing', 'siyao_feishen_wuxing',
+                            'sanyao_feishen_wuxing', 'eryao_feishen_wuxing',
+                            'chuyao_feishen_wuxing']
+    liuqin_feishen_name_set = ['liuyao_feishen_liuqin', 'wuyao_feishen_liuqin', 'siyao_feishen_liuqin',
+                            'sanyao_feishen_liuqin', 'eryao_feishen_liuqin',
+                            'chuyao_feishen_liuqin']
+
+    yao_name_set = [
+        {'label': '六爻', 'name': 'liuyao', 'time': 6},
+        {'label': '五爻', 'name': 'wuyao', 'time': 5},
+        {'label': '四爻', 'name': 'siyao', 'time': 4},
+        {'label': '三爻', 'name': 'sanyao', 'time': 3},
+        {'label': '二爻', 'name': 'eryao', 'time': 2},
+        {'label': '初爻', 'name': 'chuyao', 'time': 1}
+    ]
+
+    gender_mapper = {
+        'male': '男',
+        'female': '女'
+    }
+
+    matter_mapper = {
+        'shiye': '事业',
+        'hunyin': '婚姻',
+        'caiwu': '财物',
+        'kaoshi': '考试',
+        'xunren': '寻人',
+        'xunwu': '寻物',
+        'jiankang': '健康'
+    }
