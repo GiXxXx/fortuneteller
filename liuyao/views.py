@@ -8,7 +8,6 @@ from rest_framework.generics import RetrieveAPIView
 from .const import LiuYaoData
 from .boxcalender import BoxCalender
 
-
 # Paipan views here.
 class Paipan(APIView):
     def get(self, request):
@@ -48,8 +47,6 @@ class Paipan(APIView):
         bian_gua = ""
         for position in yao_positions:
             for yao in LiuYaoData.yao:
-                print("asdasd")
-                print(yao)
                 if yao['yao'] == coin_set[position]:
                     ben_gua += yao['image']
                     if yao['dong']:
@@ -201,19 +198,32 @@ class Paipan(APIView):
         self.put_gua_chong_he_you_gui(gua['biangua'])
         detail_view_set = [{}, {}, {}, {}, {}, {}]
         for i in range(0, 6):
-            print(detail_view_set[i])
+            detail_view_set[i]['xu'] = i+1
             detail_view_set[i]['liushen'] = gua['bengua'][LiuYaoData.liushen_name_set[i]]
+            detail_view_set[i]['benyao_liuqin'] = gua['bengua'][LiuYaoData.liuqin_name_set[i]]
+            detail_view_set[i]['benyao_dizhi'] = gua['bengua'][LiuYaoData.dizhi_name_set[i]]
+            detail_view_set[i]['benyao_wuxing'] = gua['bengua'][LiuYaoData.wuxing_name_set[i]]
             detail_view_set[i]['yao'] = gua['bengua'][LiuYaoData.liuqin_name_set[i]] + gua['bengua'][LiuYaoData.dizhi_name_set[i]] + \
                                         gua['bengua'][
                                             LiuYaoData.wuxing_name_set[i]]
-            detail_view_set[i]['yao_xiang'] = self.get_yao_xiang(gua['bengua'], LiuYaoData.yao_name_set[i]['time'])
+            yao_xiang = self.get_yao_xiang(gua['bengua'], LiuYaoData.yao_name_set[i]['time'])
+            detail_view_set[i]['yao_xiang'] = yao_xiang['yao_image']
+            detail_view_set[i]['isShi'] = yao_xiang['isShi']
+            detail_view_set[i]['isYing'] = yao_xiang['isYing']
+            detail_view_set[i]['bianyao_liuqin'] = gua['biangua'][LiuYaoData.liuqin_name_set[i]]
+            detail_view_set[i]['bianyao_dizhi'] = gua['biangua'][LiuYaoData.dizhi_name_set[i]]
+            detail_view_set[i]['bianyao_wuxing'] = gua['biangua'][LiuYaoData.wuxing_name_set[i]]
             detail_view_set[i]['bian_yao'] = gua['biangua'][LiuYaoData.liuqin_name_set[i]] + gua['biangua'][LiuYaoData.dizhi_name_set[i]] + \
                                              gua['biangua'][
                                                  LiuYaoData.wuxing_name_set[i]]
-            detail_view_set[i]['bian_yao_xiang'] = self.get_yao_xiang(gua['biangua'], LiuYaoData.yao_name_set[i]['time'])
+            detail_view_set[i]['bian_yao_xiang'] = self.get_yao_xiang(gua['biangua'], LiuYaoData.yao_name_set[i]['time'])['yao_image']
             self.put_dong_mark(gua['bengua'], gua['biangua'], LiuYaoData.yao_name_set[i]['time'], detail_view_set, i)
 
             if LiuYaoData.liuqin_fushen_name_set[i] in gua['bengua']:
+                detail_view_set[i]['fushen_liuqin'] = gua['bengua'][LiuYaoData.liuqin_fushen_name_set[i]]
+                detail_view_set[i]['fushen_dizhi'] = gua['bengua'][
+                    LiuYaoData.dizhi_fushen_name_set[i]]
+                detail_view_set[i]['fushen_wuxing'] = gua['bengua'][LiuYaoData.wuxing_fushen_name_set[i]]
                 detail_view_set[i]['fushen'] = gua['bengua'][LiuYaoData.liuqin_fushen_name_set[i]] + gua['bengua'][
                     LiuYaoData.dizhi_fushen_name_set[i]] + gua['bengua'][LiuYaoData.wuxing_fushen_name_set[i]]
             else:
@@ -227,13 +237,21 @@ class Paipan(APIView):
             yao_image = '▅▅▅▅▅'
         else:
             yao_image = '▅▅　▅▅'
-
+        
+        isShi = False
+        isYing = False
         if gua['shi'] == yao_position_number:
             yao_image += ' (世)'
+            isShi = True
         elif gua['ying'] == yao_position_number:
             yao_image += ' (应)'
+            isYing = True
 
-        return yao_image
+        return {
+                'yao_image': yao_image,
+                'isShi': isShi,
+                'isYing': isYing
+        }
 
     def put_gua_chong_he_you_gui(self, gua):
         if gua['liuhe']:
@@ -247,10 +265,13 @@ class Paipan(APIView):
 
     def put_dong_mark(self, bengua, biangua, yao_position_number, detail_view_set, i):
         if bengua['guaxiang'][yao_position_number - 1] != biangua['guaxiang'][yao_position_number - 1]:
+            detail_view_set[i]['isDong'] = True
             if bengua['guaxiang'][yao_position_number - 1] == '0':
                 detail_view_set[i]['yao_xiang'] += " X -->"
             else:
                 detail_view_set[i]['yao_xiang'] += " O -->"
+        else:
+            detail_view_set[i]['isDong'] = False
 
     def filter_json_by_key(self, key, value, array):
         for data in array:
@@ -274,34 +295,160 @@ class Paipan(APIView):
 
 # Jiegua views here.
 class Jiegua(APIView):
-    # def get(self, request):
-    #     yao = {
-    #         'nameSet': LiuYaoData.yao_name_set,
-    #         'input_display': 'display:block;',
-    #         'result_display': 'display:none;'
-    #     }
-    #     return Response(yao)
+    def post(self, request):
+        detail = self.get_wang_xiang_xiu_qiu(request)
+        self.get_wuxing_dizhi_guanxi(detail)
+        jiegua_result = {
+            'result': detail,
+        }
+        return Response(jiegua_result)
 
-    # def post(self, request):
-    #     gua_image = self.get_gua_image(request)
-    #     gua_detail = self.get_gua(request, gua_image)
-    #     yao_detail = self.get_gua_detail_view(gua_detail)
-    #     paipan_result = {
-    #         'bengua': gua_detail['bengua'],
-    #         'biangua': gua_detail['biangua'],
-    #         'input_display': 'display:none;',
-    #         'result_display': 'display:block;',
-    #         'detail': yao_detail
-    #     }
-    #     return Response(paipan_result)
+    def get_wang_xiang_xiu_qiu(self, request):
+        yuezhi = request.data['bengua']['yuezhi']
+        yao_detail = request.data['detail']
+        for yue in LiuYaoData.wang_xiang_xiu_qiu:
+            if yue['月'] == yuezhi:
+                yue_jian = yue
+                break
+        
+        for yao in yao_detail:
+            yao['benyao_wang_shuai'] = yue_jian[yao['benyao_dizhi']]
+            yao['bianyao_wang_shuai'] = yue_jian[yao['bianyao_dizhi']]
+            if yao['fushen'] != '':
+                yao['fushen_wang_shuai'] = yue_jian[yao['fushen_dizhi']]
 
-    def get_dong_jing_wang_xiang_xiu_qiu(self, request):
+        return {
+            'yao': yao_detail,
+            'bengua': request.data['bengua'],
+            'biangua': request.data['biangua']
+        }
+
+
+    def get_wuxing_dizhi_guanxi(self, detail):
+        yuezhi = detail['bengua']['yuezhi']
+        rizhi = detail['bengua']['rizhi']
+        yaos = detail['yao']
+        self.put_riyue_wuxing_guanxi(yaos, yuezhi, rizhi)
+        self.put_riyue_dizhi_guanxi(yaos, yuezhi, rizhi)
+        self.put_yao_wuxing_guanxi(yaos)
+        self.put_yao_dizhi_guanxi(yaos)
+
+    def put_yao_wuxing_guanxi(self, yaos):
+        for yao in yaos:
+            benyao_ben_wuxing = yao['benyao_wuxing']
+            bianyao_ben_wuxing = yao['bianyao_wuxing']
+            isDong = yao['isDong']
+            ben_yao_xu = yao['xu']
+
+            if isDong:
+                yao['benyao_wuxing_guanxi_with_bianyao'] = self.get_wuxing_guanxi(benyao_ben_wuxing, bianyao_ben_wuxing)
+
+            for other in yaos:
+                bie_yao_xu = other['xu']
+                if ben_yao_xu != bie_yao_xu:
+                    bieyao_ben_wuxing = other['benyao_wuxing']
+                    key = 'benyao_wuxing_guanxi_with_' + str(bie_yao_xu) + '_yao'
+                    yao[key] = self.get_wuxing_guanxi(benyao_ben_wuxing, bieyao_ben_wuxing)
+
+                    if 'fushenwuxing' in yao:
+                        fushen_ben_wuxing = yao['fushen_wuxing']
+                        key = 'fushen_wuxing_guanxi_with_' + str(bie_yao_xu) + '_yao'
+                        yao[key] = self.get_wuxing_guanxi(fushen_ben_wuxing, bieyao_ben_wuxing)
+
         return
 
-    def get_yao_sheng_ke(self, request):
+    def put_yao_dizhi_guanxi(self, yaos):
+        for yao in yaos:
+            benyao_ben_dizhi = yao['benyao_dizhi']
+            bianyao_ben_dizhi = yao['bianyao_dizhi']
+            isDong = yao['isDong']
+            ben_yao_xu = yao['xu']
+
+            if isDong:
+                yao['benyao_dizhi_guanxi_with_bianyao'] = self.get_dizhi_guanxi(benyao_ben_dizhi, bianyao_ben_dizhi)
+
+            for other in yaos:
+                bie_yao_xu = other['xu']
+                if ben_yao_xu != bie_yao_xu:
+                    bieyao_ben_dizhi = other['benyao_dizhi']
+                    key = 'benyao_dizhi_guanxi_with_' + str(bie_yao_xu) + '_yao'
+                    yao[key] = self.get_dizhi_guanxi(benyao_ben_dizhi, bieyao_ben_dizhi)
+
+                    if 'fushendizhi' in yao:
+                        fushen_ben_dizhi = yao['fushen_dizhi']
+                        key = 'fushen_dizhi_guanxi_with_' + str(bie_yao_xu) + '_yao'
+                        yao[key] = self.get_dizhi_guanxi(fushen_ben_dizhi, bieyao_ben_dizhi)
+
         return
 
-    def get_ri_yue(self, request):
+
+    def put_riyue_wuxing_guanxi(self, yaos, yuezhi, rizhi):
+        ri_wuxing = self.filter_json_by_key('dizhi', yuezhi, LiuYaoData.dizhi)['wuxing']
+        yue_wuxing = self.filter_json_by_key('dizhi', rizhi, LiuYaoData.dizhi)['wuxing']
+
+        for yao in yaos:
+            benyao_wuxing = yao['benyao_wuxing']
+            bianyao_wuxing = yao['bianyao_wuxing']
+            yao['benyao_wuxing_guanxi_with_ri'] = self.get_wuxing_guanxi(benyao_wuxing, ri_wuxing)
+            yao['benyao_wuxing_guanxi_with_yue'] = self.get_wuxing_guanxi(benyao_wuxing, yue_wuxing)
+            yao['bianyao_wuxing_guanxi_with_ri'] = self.get_wuxing_guanxi(bianyao_wuxing, ri_wuxing)
+            yao['bianyao_wuxing_guanxi_with_yue'] = self.get_wuxing_guanxi(bianyao_wuxing, yue_wuxing)
+
+            if 'fushen_wuxing' in yao:
+                fushen_wuxing = yao['fushen_wuxing']
+                yao['fushen_wuxing_guanxi_with_ri'] = self.get_wuxing_guanxi(fushen_wuxing, ri_wuxing)
+                yao['fushen_wuxing_guanxi_with_yue'] = self.get_wuxing_guanxi(fushen_wuxing, yue_wuxing)
+
         return
+
+    def put_riyue_dizhi_guanxi(self, yaos, yuezhi, rizhi):
+        for yao in yaos:
+            benyao_dizhi = yao['benyao_dizhi']
+            bianyao_dizhi = yao['bianyao_dizhi']
+            yao['benyao_dizhi_guanxi_with_ri'] = self.get_dizhi_guanxi(benyao_dizhi, rizhi)
+            yao['benyao_dizhi_guanxi_with_yue'] = self.get_dizhi_guanxi(benyao_dizhi, yuezhi)
+            yao['bianyao_dizhi_guanxi_with_ri'] = self.get_dizhi_guanxi(bianyao_dizhi, rizhi)
+            yao['bianyao_dizhi_guanxi_with_yue'] = self.get_dizhi_guanxi(bianyao_dizhi, yuezhi)
+
+            if 'fushen_dizhi' in yao:
+                fushen_dizhi = yao['fushen_dizhi']
+                yao['fushen_dizhi_guanxi_with_ri'] = self.get_dizhi_guanxi(fushen_dizhi, rizhi)
+                yao['fushen_dizhi_guanxi_with_yue'] = self.get_dizhi_guanxi(fushen_dizhi, yuezhi)
+
+        return
+
+    def get_wuxing_guanxi(self, zhu_wuxing, bie_wuxing):
+        for wuxing in LiuYaoData.wuxing_guanxi:
+            if wuxing['五行'] == zhu_wuxing:
+                guanxi = wuxing[bie_wuxing]
+                break
+
+        return guanxi
+
+    def get_dizhi_guanxi(self, zhu_dizhi, bie_dizhi):
+        for dizhi in LiuYaoData.dizhi_guanxi:
+            if dizhi['地支'] == zhu_dizhi:
+                guanxi = dizhi[bie_dizhi]
+                break
+
+        return guanxi
     
-    
+
+    def filter_json_by_key(self, key, value, array):
+        for data in array:
+            if key in data:
+                if data[key] == value:
+                    return data
+            else:
+                return None
+
+        return None
+
+    def filter_json_array_by_key(self, key, value, array):
+        filtered_array = []
+        for data in array:
+            if key in data:
+                if data[key] == value:
+                    filtered_array.append(data)
+
+        return filtered_array
