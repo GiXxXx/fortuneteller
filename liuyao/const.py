@@ -45,6 +45,12 @@ class LiuYaoData:
                     {"id": 15, "gua": "兑", "neiwai": "外", "chu": "亥", "er": "酉", "san": "未"},
                     {"id": 16, "gua": "巽", "neiwai": "外", "chu": "未", "er": "巳", "san": "卯"}]
 
+    tianganxu = {"丁": 4 , "丙": 3, "乙": 2, "壬": 9, "己": 6, "庚": 7, "戊": 5, "癸": 10, "辛": 8, "甲": 1}
+
+    dizhixu = {"子": 1, "丑": 2, "寅": 3, "卯": 4, "辰": 5, "巳": 6, "午": 7, "未": 8, "申": 9, "酉": 10, "戌": 11, "亥": 12}
+
+    xunkong = {0:"戌亥", 10:"申酉", 8:"午未", 6:"辰巳", 4:"寅卯", 2:"子丑",}
+
     dizhi = [{"dizhi": "丑", "yinyang": "阴", "wuxing": "土"}, {"dizhi": "亥", "yinyang": "阳", "wuxing": "水"},
              {"dizhi": "午", "yinyang": "阳", "wuxing": "火"}, {"dizhi": "卯", "yinyang": "阳", "wuxing": "木"},
              {"dizhi": "子", "yinyang": "阳", "wuxing": "水"}, {"dizhi": "寅", "yinyang": "阳", "wuxing": "木"},

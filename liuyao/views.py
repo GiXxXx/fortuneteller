@@ -2,17 +2,26 @@
 from __future__ import unicode_literals
 
 from rest_framework.decorators import APIView
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.generics import RetrieveAPIView
 from .const import LiuYaoData
 from .boxcalender import BoxCalender
 
+class Index(RetrieveAPIView):
+    renderer_classes = (TemplateHTMLRenderer,)
+    def get(self, request):
+        return Response({'context':''}, template_name='../templates/liuyao/liuyao.html')
+
 # Paipan views here.
 class Paipan(APIView):
+    renderer_classes = (JSONRenderer,)
+
     def get(self, request):
         yao = {
             'nameSet': LiuYaoData.yao_name_set,
+            'yaoSet': LiuYaoData.yao,
             'input_display': 'display:block;',
             'result_display': 'display:none;'
         }
@@ -67,7 +76,7 @@ class Paipan(APIView):
         bengua_neigua = self.filter_json_by_key('guaxiang', bengua_neigua_image, LiuYaoData.bagua)
         bengua_waigua = self.filter_json_by_key('guaxiang', bengua_waigua_image, LiuYaoData.bagua)
         biangua_neigua = self.filter_json_by_key('guaxiang', biangua_neigua_image, LiuYaoData.bagua)
-        biangua_waigua = self.filter_json_by_key('guaxiang', biangua_neigua_image, LiuYaoData.bagua)
+        biangua_waigua = self.filter_json_by_key('guaxiang', biangua_waigua_image, LiuYaoData.bagua)
 
         # 获得六十四卦的本卦信息
         bengua = self.filter_json_by_key('neigua', bengua_neigua['gua'],
@@ -116,6 +125,8 @@ class Paipan(APIView):
         self.put_fushen_feishen(bengua, shougonggua)
 
         self.put_other_info(bengua, request)
+
+        self.put_xun_kong(bengua, bengua['rigan'], bengua['rizhi'])
 
         return {
             'bengua': bengua,
@@ -170,6 +181,12 @@ class Paipan(APIView):
         gua['chuyao_liushen'] = liushen_set['chuyao']
         return
 
+    def put_xun_kong(self, bengua, tiangan, dizhi):
+        tiangan_xu = LiuYaoData.tianganxu[tiangan]
+        dizhi_xu = LiuYaoData.dizhixu[dizhi]
+        diff = dizhi_xu - tiangan_xu
+        bengua['rikong'] = LiuYaoData.xunkong[diff]
+
     def put_fushen_feishen(self, bengua, shougonggua):
         bengua_liuqin_set = []
         for key in LiuYaoData.liuqin_name_set:
@@ -198,7 +215,7 @@ class Paipan(APIView):
         self.put_gua_chong_he_you_gui(gua['biangua'])
         detail_view_set = [{}, {}, {}, {}, {}, {}]
         for i in range(0, 6):
-            detail_view_set[i]['xu'] = i+1
+            detail_view_set[i]['xu'] = 6-i
             detail_view_set[i]['liushen'] = gua['bengua'][LiuYaoData.liushen_name_set[i]]
             detail_view_set[i]['benyao_liuqin'] = gua['bengua'][LiuYaoData.liuqin_name_set[i]]
             detail_view_set[i]['benyao_dizhi'] = gua['bengua'][LiuYaoData.dizhi_name_set[i]]
@@ -383,8 +400,8 @@ class Jiegua(APIView):
 
 
     def put_riyue_wuxing_guanxi(self, yaos, yuezhi, rizhi):
-        ri_wuxing = self.filter_json_by_key('dizhi', yuezhi, LiuYaoData.dizhi)['wuxing']
-        yue_wuxing = self.filter_json_by_key('dizhi', rizhi, LiuYaoData.dizhi)['wuxing']
+        yue_wuxing = self.filter_json_by_key('dizhi', yuezhi, LiuYaoData.dizhi)['wuxing']
+        ri_wuxing = self.filter_json_by_key('dizhi', rizhi, LiuYaoData.dizhi)['wuxing']
 
         for yao in yaos:
             benyao_wuxing = yao['benyao_wuxing']
